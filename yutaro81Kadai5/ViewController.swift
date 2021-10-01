@@ -10,34 +10,31 @@ class ViewController: UIViewController {
     @IBOutlet weak private var textField1: UITextField!
     @IBOutlet weak private var textField2: UITextField!
     @IBOutlet weak private var resultLabel: UILabel!
+    //ボタンアクションの処理
     @IBAction private func calculationButton(_ sender: Any) {
-        let num1 = Double(textField1.text ?? "") ?? 0
-        let num2 = Double(textField2.text ?? "") ?? 0
-
-        let title1 = "課題５"
-        let message1 = "割られる数を入力してください"
-        let alert1 = UIAlertController(title: title1, message: message1, preferredStyle: .alert)
-        let title2 = "課題５"
-        let message2 = "割る数を入力してください"
-        let alert2 = UIAlertController(title: title2, message: message2, preferredStyle: .alert)
-        let title3 = "課題５"
-        let message3 = "割る数には０を入れないでください"
-        let alert3 = UIAlertController(title: title3, message: message3, preferredStyle: .alert)
-
-        let okAlert = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert1.addAction(okAlert)
-        alert2.addAction(okAlert)
-        alert3.addAction(okAlert)
-
-        if textField1.text?.isEmpty == true {
-            present(alert1, animated: true, completion: nil)
-        } else if textField2.text?.isEmpty == true {
-            present(alert2, animated: true, completion: nil)
-        } else if textField2.text == "0" {
-            present(alert3, animated: true, completion: nil)
-        } else { let result = num1 / num2
-            let floorresult = floor(result * 100000) / 100000
-            resultLabel.text = String(floorresult)
+        //guard let 文により　textField1のテキストをアンラップしてnum1に渡している　else以降は空欄の際の処理
+        guard let num1 = Double(textField1.text ?? "") else {
+            presentAlert(message: "割られる数を入力してください")
+            return
         }
+        guard let num2 = Double(textField2.text ?? "") else {
+            presentAlert(message: "割る数を入力してください")
+            return
+        }
+        //guard文ではnum2が０でない時でない時、と定義している。つまり０の時elseの中の処理が行われる
+        guard num2 != 0 else {
+            presentAlert(message: "割る数には0を入れないでください")
+            return
+        }
+        let result = num1 / num2
+        let floorResult = floor(result * 100000) / 100000
+        resultLabel.text = String(floorResult)
+    }
+    // 関数はmessageというStringの引数を作成してメッセージを処理ごとに与えられるようにする
+    private func presentAlert(message: String) {
+        let alert = UIAlertController(title: "課題5", message: message, preferredStyle: .alert)
+        let okAlert = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAlert)
+        present(alert, animated: true, completion: nil)
     }
 }
